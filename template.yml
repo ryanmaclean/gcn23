@@ -1,0 +1,35 @@
+resources:
+  # Define a Google Cloud Run service for the AI model
+  - name: ai-service
+    type: gcp-types/run-v1:projects.locations.services
+    properties:
+      # Set the service name and region
+      service: ai-service
+      location: us-central1
+
+      # Define the container image to deploy
+      image: gcr.io/my-project/ai-model:latest
+
+      # Set the container port and command
+      containerPort: 8080
+      command:
+        - python
+        - app.py
+
+      # Define environment variables for the AI model
+      envVars:
+        MODEL_PATH: "gs://my-bucket/model.h5"
+
+  # Define a Google Cloud Storage bucket to store the AI model
+  - name: ai-bucket
+    type: storage.v1.bucket
+    properties:
+      name: my-bucket
+
+  # Define a Google Cloud Storage object to store the AI model
+  - name: ai-model
+    type: storage.v1.object
+    properties:
+      bucket: my-bucket
+      name: model.h5
+      source: /path/to/model.h5
